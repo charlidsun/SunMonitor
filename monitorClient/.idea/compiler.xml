@@ -9,5 +9,8 @@
         <module name="monitorClient" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="monitorClient" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

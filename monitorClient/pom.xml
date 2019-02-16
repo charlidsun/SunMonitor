@@ -15,6 +15,14 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.31.Final</version>
         </dependency>
+
+        <!--oshi-->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

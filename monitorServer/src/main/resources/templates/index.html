@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/index.css">
+    <title>Title</title>
+</head>
+<style>
+    .time {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .bottom {
+        margin-top: 13px;
+        line-height: 12px;
+    }
+
+    .button {
+        padding: 0;
+        float: right;
+    }
+
+    .image {
+        width: 100%;
+        display: block;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+</style>
+<body>
+<div id="app">
+    <el-row>
+        <el-col :span="24" style="align-items: center">
+            局域网机器监控工具V12
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="6">
+            <el-card :body-style="{ padding: '10px' }">
+                <div style="padding: 5px;">
+                    <span>当前接入客户机数量</span>
+                    <el-button style="float: right; padding: 3px 0" type="text">{{succMacCount}}</el-button>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="6">
+            <el-card :body-style="{ padding: '10px' }">
+                <div style="padding: 5px;">
+                    <span>未接入客户机数量</span>
+                    <el-button style="float: right; padding: 3px 0" type="text">{{errMacCount}}</el-button>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="6">
+            <el-card :body-style="{ padding: '10px' }">
+                <div style="padding: 5px;">
+                    <span>当前监控的网站数量</span>
+                    <el-button style="float: right; padding: 3px 0" type="text">{{succWebCount}}</el-button>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="6">
+            <el-card :body-style="{ padding: '10px' }">
+                <div style="padding: 5px;">
+                    <span>当前网站未通数量</span>
+                    <el-button style="float: right; padding: 3px 0" type="text">{{errWebCount}}</el-button>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+    <el-row style="margin-top: 10px">
+        <el-col :span="18">
+            <el-col :span="6" v-for="(o, index) in macInfoList" :key="o">
+                <el-card :body-style="{ padding: '0px' }">
+                    <div style="padding:12px;">
+                        <span>{{o.ip}}</span>
+                        <span>可用/全部CUP：1G/4G</span>
+                        <el-progress :text-inside="true" :stroke-width="18" :percentage="70"></el-progress>
+                        <span>可用/全部内存：1G/4G</span>
+                        <el-progress :text-inside="true" :stroke-width="18" :percentage="70"></el-progress>
+                        <span>硬盘</span>
+                        <el-badge value="new" class="item">
+                            <el-button size="small">A</el-button>
+                        </el-badge>
+                        <el-badge value="new" class="item">
+                            <el-button size="small">B</el-button>
+                        </el-badge>
+                        <el-badge value="new" class="item">
+                            <el-button size="small">C</el-button>
+                        </el-badge>
+                        <el-badge value="new" class="item">
+                            <el-button size="small">D</el-button>
+                        </el-badge>
+                        <div class="bottom clearfix">
+                            <el-button type="text" class="button">操作按钮</el-button>
+                        </div>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-col>
+        <el-col :span="6">
+            <el-col :span="24" v-for="(o, index) in 6" :key="o">
+                <el-card :body-style="{ padding: '0px' }">
+                    <div style="padding:12px;">
+                        <span>10.37.169.80</span>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-col>
+    </el-row>
+</div>
+<script src="/js/vue.js"></script>
+<!-- import JavaScript -->
+<script src="/js/index.js"></script>
+<script type="text/javascript">
+    var succMacCount,errMacCount,succWebCount,errWebCount;
+    var macInfoList;
+    new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                "succMacCount":0,
+                "errMacCount":0,
+                "succWebCount":0,
+                "errWebCount":0,
+                "macInfoList":macInfoList
+            }
+        }
+    })
+    var socket;
+    if (!window.WebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://127.0.0.1:8899/websocket");
+        socket.onmessage = function (event) {
+            console.log("接受到数据" + event);
+            var data = (event.data + '').split(',');
+            //SetOptions("");
+            ad(data);
+        };
+        socket.onopen = function (event) {
+            console.info("连接开启");
+        };
+        socket.onclose = function (event) {
+            console.info("连接被关闭");
+        };
+    } else {
+        alert("你的浏览器不支持 WebSocket！");
+    };
+
+    function ad (data){
+        console.log("接收到数据"+data)
+        //1，接入客户端数量
+        //succMacCount = data.succMacCount;
+        //2，客户端的基本信息
+        //macInfoList = data.macInfoList;
+    }
+</script>
+</body>
+</html>
