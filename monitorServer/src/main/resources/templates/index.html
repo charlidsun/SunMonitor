@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/index.css">
@@ -122,49 +122,45 @@
 <!-- import JavaScript -->
 <script src="/js/index.js"></script>
 <script type="text/javascript">
-    var succMacCount,errMacCount,succWebCount,errWebCount;
-    var macInfoList;
     new Vue({
         el: '#app',
-        data: function() {
-            return {
-                "succMacCount":0,
-                "errMacCount":0,
-                "succWebCount":0,
-                "errWebCount":0,
-                "macInfoList":macInfoList
-            }
-        }
-    })
-    var socket;
-    if (!window.WebSocket) {
-        window.WebSocket = window.MozWebSocket;
-    }
-    if (window.WebSocket) {
-        socket = new WebSocket("ws://127.0.0.1:8899/websocket");
-        socket.onmessage = function (event) {
-            console.log("接受到数据" + event);
-            var data = (event.data + '').split(',');
-            //SetOptions("");
-            ad(data);
-        };
-        socket.onopen = function (event) {
-            console.info("连接开启");
-        };
-        socket.onclose = function (event) {
-            console.info("连接被关闭");
-        };
-    } else {
-        alert("你的浏览器不支持 WebSocket！");
-    };
+        data:{
+            succMacCount:10,
+            errMacCount:0,
+            succWebCount:0,
+            errWebCount:0,
+            macInfoList:null
+        },
+        mounted:function(){
+            this.initSocket();
+        },
+        methods:{
+            //接收导数据
+            initSocket:function () {
+                var that = this;
+                var socket;
+                if (!window.WebSocket) {
+                    window.WebSocket = window.MozWebSocket;
+                }
+                if (window.WebSocket) {
+                    socket = new WebSocket("ws://127.0.0.1:8899/websocket");
+                    socket.onmessage = function (event) {
+                        var data = (event.data);
+                        console.log(JSON.parse(event.data));
 
-    function ad (data){
-        console.log("接收到数据"+data)
-        //1，接入客户端数量
-        //succMacCount = data.succMacCount;
-        //2，客户端的基本信息
-        //macInfoList = data.macInfoList;
-    }
+                    };
+                    socket.onopen = function (event) {
+                        console.info("连接开启");
+                    };
+                    socket.onclose = function (event) {
+                        console.info("连接被关闭");
+                    };
+                } else {
+                    alert("你的浏览器不支持 WebSocket！");
+                };
+            },
+        },
+    })
 </script>
 </body>
 </html>

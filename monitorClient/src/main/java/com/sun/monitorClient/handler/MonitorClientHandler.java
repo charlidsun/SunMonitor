@@ -1,5 +1,6 @@
 package com.sun.monitorClient.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.sun.monitorClient.protocol.TransProtocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -56,6 +57,6 @@ public class MonitorClientHandler extends ChannelInboundHandlerAdapter {
         String mess = msg.toString();
         Map map = TransProtocol.getMsg(Integer.valueOf(mess));
         //将值返回给服务器
-        userEventTriggered(ctx,map.toString());
+        userEventTriggered(ctx, JSON.toJSONString(map).replaceAll("\"","'"));
     }
 }

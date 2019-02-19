@@ -1,11 +1,14 @@
 package com.sun.monitorServer.server;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sun.monitorServer.wbserver.WbServer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +18,7 @@ public class MinitorServerHandler extends SimpleChannelInboundHandler<String> {
     //线程安全，保存客户端信息
     private static Map<Channel, Object> clientMap = new ConcurrentHashMap<>();
 
-    private static List<String> allMsgList = new ArrayList<>();
+    private static List<JSONObject> allMsgList = new ArrayList<>();
 
     /**
      * 连接
@@ -53,10 +56,17 @@ public class MinitorServerHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
-        System.out.println(msg);
-        allMsgList.add(msg);
+        //客户端发送过来的是json字符串，将其转换未map
+        System.err.println(msg);
+        JSONObject o = JSONObject.parseObject(msg);
+        allMsgList.add(o);
         if (allMsgList.size() == clientMap.size()){
-            WbServer.sendInfo(allMsgList.toString());
+            Map<String,Object> allMsgMap = new HashMap<>();
+            //1.当前客户端接入的数量
+            allMsgMap.put("succMacCount",clientMap.size());
+            //2.客户端的信息
+            allMsgMap.put("macInfoList",allMsgList);
+            WbServer.sendInfo(JSON.toJSONString(allMsgMap));
             allMsgList.clear();
         }
     }

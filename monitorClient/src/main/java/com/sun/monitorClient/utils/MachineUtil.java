@@ -98,7 +98,7 @@ public class MachineUtil {
         Map map = new HashMap();
         //系统基本信息
         //Apple macOS 10.13.3 (High Sierra) build 17D102
-        map.put("baseInfo",os);
+        //map.put("baseInfo",os);
         //cpu基本信息
         map.put("processorInfo",hal.getProcessor());
         //IP
